@@ -1,0 +1,47 @@
+[project]
+name = "evidence-atlas"
+version = "0.2.0"
+description = "API gateway exposing Evidence BI projects to AI agents"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.6",
+    "duckdb>=0.10",
+    "pyarrow>=15",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "httpx>=0.27",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+atlas = "atlas.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/atlas"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.mypy]
+python_version = "3.12"
+packages = ["src/atlas"]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["pyarrow", "pyarrow.parquet", "duckdb"]
+ignore_missing_imports = true

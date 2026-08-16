@@ -1,0 +1,11 @@
+[server]
+host = "0.0.0.0"
+port = 7331
+token = ""
+
+default_domain_account = "your-account@example.com"
+
+[[projects]]
+id = "my-evidence-project"
+name = "My Evidence Project"
+path = "/path/to/evidence/project"
