@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi import Query as QueryParam
@@ -27,7 +28,7 @@ def create_app(config: Config | None = None) -> FastAPI:
         idx = MetadataIndex()
         normalized_path = Path(proj.path) / "build" / "api" / "atlas-normalized.json"
         if normalized_path.exists():
-            idx.load(normalized_path)
+            idx.load(normalized_path, project_path=proj.path)
             indexes[proj.id] = idx
         engines[proj.id] = DuckDBEngine(
             proj.path,
@@ -71,6 +72,12 @@ def create_app(config: Config | None = None) -> FastAPI:
         idx = get_index(project_id)
         results = idx.find_datasets(q)
         return [_dataset_to_dict(ds, idx) for ds in results]
+
+    @app.get("/projects/{project_id}/lineage/tables")
+    async def get_project_lineage_tables(project_id: str) -> dict[str, Any]:
+        idx = get_index(project_id)
+        tables = idx.get_project_warehouse_tables()
+        return {"project_id": project_id, "tables": tables}
 
     @app.get("/datasets/{dataset_id}")
     async def get_dataset(

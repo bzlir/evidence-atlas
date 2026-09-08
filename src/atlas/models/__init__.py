@@ -27,6 +27,9 @@ class Query(BaseModel):
     compiled: bool = False
     compile_error: str | None = None
     project_id: str = ""
+    source: bool = False
+    datasource: str | None = None
+    parquet_dependencies: list[str] = []
 
 
 class Dataset(BaseModel):
